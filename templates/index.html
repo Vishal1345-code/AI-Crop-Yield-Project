@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Crop Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background: #1b5e20;
+    color: white;
+    height: 100vh;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    text-align: center;
+}
+
+.sidebar a {
+    display: block;
+    padding: 10px;
+    color: white;
+    text-decoration: none;
+}
+
+.sidebar a:hover {
+    background: #2e7d32;
+}
+
+/* Main */
+.main {
+    flex: 1;
+    padding: 20px;
+    background: #f4f6f9;
+}
+
+/* Form */
+.form-box {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+}
+
+/* Cards */
+.cards {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.card {
+    flex: 1;
+    padding: 15px;
+    border-radius: 10px;
+    color: white;
+}
+
+.green { background: #4caf50; }
+.blue { background: #2196f3; }
+.orange { background: #ff9800; }
+
+/* Suggestion */
+.suggestion {
+    margin-top: 20px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+/* Chart */
+canvas {
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>🌾 Agro AI</h2>
+    <a href="#">Dashboard</a>
+    <a href="#">Prediction</a>
+    <a href="#">Market</a>
+</div>
+
+<div class="main">
+
+<h2>Crop Prediction System</h2>
+
+<div class="form-box">
+<form action="/predict" method="post">
+
+<select name="State">
+    <option value="1">Gujarat</option>
+    <option value="2">Maharashtra</option>
+    <option value="3">Uttar Pradesh</option>
+    <option value="4">Rajasthan</option>
+    <option value="5">Bihar</option>
+    <option value="6">Tamil Nadu</option>
+    <option value="7">Punjab</option>
+    <option value="8">Karnataka</option>
+    <option value="9">Haryana</option>
+    <option value="10">Madhya Pradesh</option>
+</select>
+
+<select name="Crop">
+    <option value="0">Wheat</option>
+    <option value="1">Rice</option>
+    <option value="2">Sugarcane</option>
+    <option value="3">Bajra</option>
+    <option value="4">Soybean</option>
+    <option value="5">Maize</option>
+</select>
+
+<input type="number" name="Year" placeholder="Year">
+<input type="number" name="Rainfall" placeholder="Rainfall (mm)">
+<input type="number" name="Temperature" placeholder="Temperature (°C)">
+<input type="number" name="Area" placeholder="Area (hectares)">
+
+<button type="submit">Predict</button>
+
+</form>
+</div>
+
+{% if prediction %}
+
+<div class="cards">
+    <div class="card green">🌱 Yield: {{ prediction }}</div>
+    <div class="card blue">💰 Price: ₹{{ price }}</div>
+    <div class="card orange">📈 Profit: ₹{{ profit }}</div>
+</div>
+
+<div class="suggestion">
+<h3>🤖 AI Suggestion:</h3>
+<p>
+{% if profit > 500000 %}
+Great profit expected. You can sell immediately.
+{% else %}
+Consider waiting for better market price.
+{% endif %}
+</p>
+</div>
+
+<canvas id="myChart"></canvas>
+
+<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Yield', 'Price', 'Profit'],
+        datasets: [{
+            label: 'Analysis',
+            data: [{{ prediction }}, {{ price }}, {{ profit }}]
+        }]
+    }
+});
+</script>
+
+{% endif %}
+
+</div>
+
+</body>
+</html>
